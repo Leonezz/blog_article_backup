@@ -9,6 +9,8 @@ categories:
 
 ![](hello-world/1.png)
 
+<!--more-->
+
 我把石头还给石头
 
 今夜青稞只属于她自己
