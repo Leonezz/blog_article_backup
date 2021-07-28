@@ -6,7 +6,7 @@ date: 2021-07-22 19:16:50
 tags: 
   - 位运算
   - CS:APP
-categories: CS:APP
+categories: 题解类
 ---
 
 CS:APP homework 2.66 题：
