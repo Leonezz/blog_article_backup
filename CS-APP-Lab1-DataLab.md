@@ -58,7 +58,7 @@ int bitXor(int x, int y) {
 }
 ```
 
-只使用 ~ 和 & 运算符实现 ^ 运算。最多可以使用14个运算符。
+只使用 `~` 和 `&` 运算符实现 `^` 运算。最多可以使用14个运算符。
 
 考虑位级异或运算的真值表：
 
@@ -82,3 +82,109 @@ int bitXor(int x, int y) {
 ```
 
 因此直接将上面的 `return 2` 改成 `return ~(~(x & ~y) & ~(~x & y))` 即可。
+
+这道题目还可以在卡诺图化简时选择反函数，即化简出 `~(x ^ y)` 的表达式。具体来说，是选择真值表中结果为`0`的项进行化简：`~(x ^ y) = (x & y) | (~x & ~y)`。这样的情况下，有：`(x ^ y) = ~((x & y) | (~x & ~y)) = (~x | ~y) & (x | y) = ~(x & y) & ~(~x & ~y)`。这个结果比上一个少用了1个运算符。
+
+# 0x02 tmin
+
+```C
+/* 
+ * tmin - return minimum two's complement integer 
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 4
+ *   Rating: 1
+ */
+int tmin(void) {
+  return 2;
+}
+```
+
+这道非常简单，返回最小的补码值，即 `0x80000000`。由于不能使用除 `0x00~0xff` 之外的常数，直接返回 `0x01 << 31` 即可。
+
+# 0x03 isTmax
+
+```C
+/*
+ * isTmax - returns 1 if x is the maximum, two's complement number,
+ *     and 0 otherwise 
+ *   Legal ops: ! ~ & ^ | +
+ *   Max ops: 10
+ *   Rating: 1
+ */
+int isTmax(int x) {
+  return 2;
+}
+```
+
+这道是判断参数是否是最大补码值，即 `0x7fffffff`。不难知道对于 `0x7fffffff`，其处在溢出的边缘，再加 `1` 就会得到最小的补码值 `0x80000000`。观察最小补码值和最大补码值的位模式，得知最小补码值只有最高位为 `1`，其余位为 `0`；而最大补码值相反——只有最高位为 `0`，其余位为 `1`——因此最小补码值取反应该为最大补码值。
+
+基于以上原理，当 `x = 0x7fffffff` 时，`!(x ^ ~(x + 1)) = 1`。这就实现了最大补码值时返回 `1`。
+
+实际测试时发现，当 `x = 0xffffffff` 时，由于也处于溢出边缘，也具有上述的性质，对结果造成误判。因此需要过滤掉该种情况。
+
+当 `x = 0xffffffff` 时，其位模式是所有位都为 `1`。因此对其取反可以得到特殊值 `0`。可以使用表达式 `~x` 进行过滤，这样的话总的结果就是 `!(x ^ ~(x + 1)) & ~x`。对这个结果使用 `x = 0x7fffffff` 进行验证，发现 `~x = 0x80000000`，这样的话最终结果就是 `0x80000000 & 0x1 = 0`，因此还需要对 `~x` 的值进行二值化，让其取值只落在 `0` 和 `1` 的范围内。即 `!!~x`。
+
+最终结果为 `!(x ^ ~(x + 1)) & (!!~x)`。
+
+# 0x04 allOddBits
+
+```C
+/* 
+ * allOddBits - return 1 if all odd-numbered bits in word set to 1
+ *   where bits are numbered from 0 (least significant) to 31 (most significant)
+ *   Examples allOddBits(0xFFFFFFFD) = 0, allOddBits(0xAAAAAAAA) = 1
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 12
+ *   Rating: 2
+ */
+int allOddBits(int x) {
+  return 2;
+}
+```
+
+这道题要求判断给定的参数其位模式的奇数位是否都为 `1`。例如，数据 `0xFFFFFFFD` 的最低四位是 `1101`，第1位为 `0`，所以返回 `0`。数据 `0xAAAAAAAA` 则是所有奇数位都为 `1`，所有偶数位都为 `0`，所以返回 `1`。
+
+因为只需要判断奇数位上的情况，偶数位则可以忽略。因此可以使用数据 `0xAAAAAAAA` 作为 mask 来对参数进行校验。如果参数 `x` 的奇数位都为 `1` 的话，表达式 `0xAAAAAAAA & x = 0xAAAAAAAA` 成立。则可以使用表达式 `!(0xAAAAAAAA ^ (0xAAAAAAAA & x))` 作为答案。因为不能直接使用这么大的常数，mask 需要从 `0xAA` 经过运算得到。以下表达式得到 `mask = 0xAAAAAAAA`:
+
+```C
+  int mask = 0xAA;
+  mask |= mask << 8;
+  mask |= mask << 16;
+```
+
+所以答案是：
+
+```C
+int allOddBits(int x) {
+  int mask = 0xAA;
+  mask |= mask << 8;
+  mask |= mask << 16;
+  return !((x & mask) ^ mask);
+}
+```
+
+# 0x05 negate
+
+```C
+/* 
+ * negate - return -x 
+ *   Example: negate(1) = -1.
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 5
+ *   Rating: 2
+ */
+int negate(int x) {
+  return 2;
+}
+```
+
+这道题要求使用5个以内给定种类的运算符实现补码相反数操作。
+
+对于补码整数，其编码与无符号数编码一致；对于补码负数，其编码方式则是最高位取负权，其余位取正权。
+
+通过学习CS:APP第二章我们知道，补码的非有两种聪明的求法：
+
+1. 对每一位求补，再对结果加 `1`。在C语言中，对于任意整数 `x`，计算表达式 `-x` 和 `~x+1` 得到的结果完全一样。
+2. 将位向量分为两部分，假设 $k$ 是位向量中最右边的 $1$ 的位置，因而 $x$ 的位级表示形如 $[x_(w−1), x_(w−2), …,x_(k+1),1,0,…,0]$，这个值的非的二进制形式为：$[~x_(w−1),~x_(w−2),…,~x_(k+1),1,0,…,0]$。即：对位 $k$ 左边的所有位取反。
+
+这题中应用第一种求法，得到答案：`~x + 1`。
