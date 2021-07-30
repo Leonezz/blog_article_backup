@@ -274,3 +274,54 @@ $$\mathrm{(isXZero\ \&\ y) + (isXZero\ |\ z)} = \begin{cases}
 \end{cases}$$
 
 这样答案就较为明显了，只需在 `x != 0` 时将上述的和式加上 `1` 就可以。可以认为 `x == 0` 时上式加上 `0`，这样加上的实际上是 `x` 的某种变形，即 `~!!x`。所以答案为：`(isXZero | z) + (isXZero & y) + !!x`
+
+# 0x08 isLessOrEqual
+
+```C
+/* 
+ * isLessOrEqual - if x <= y  then return 1, else return 0 
+ *   Example: isLessOrEqual(4,5) = 1.
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 24
+ *   Rating: 3
+ */
+int isLessOrEqual(int x, int y) {
+  return 2;
+}
+```
+
+这道题要求实现 `<=` 运算。十分自然的想法是利用减法运算 `x - y`，然后判断结果的符号位，看了一下不允许使用减法，又想了一下想起可以用取相反数的方法计算减法，而相反数则可以通过按位取反后加1获得。不知道这样算不算投机取巧。于是首先试一下 `(x + (~y + 1) >> 31) & 0x1`，发现 `isLessOrEqual(-2147483648[0x80000000],-2147483648[0x80000000])` 过不了，这才发觉有溢出时，符号位会丢失。因此下面需要将溢出的情况单列。
+
+众所周知 `~y + 1` 与 `-y` 对于任意整数 `y` 结果都相同，那么溢出的情况实际上就是正常的减法溢出。如较大(绝对值)的负数减去较大的正数，或者较大的正数减去较大(绝对值)的负数，而对于符号相同的情况，就绝不会溢出。总而言之，要被单列的情况一定是 `x` 和 `y` 异号的情况，而对于异号的情况，其大小关系又是确定的，因此本题就容易解了。
+
+对于有符号整数 `x` 和 `y`，除去 `x == y == 0`，他们的正负共有以下四种情况：
+
+$$\begin{cases}
+  \mathrm{x < 0, & y > 0} & 1\\
+  \mathrm{x > 0, & y < 0} & 2\\
+  \mathrm{x < 0, & y < 0} & 3\\
+  \mathrm{x > 0, & y > 0} & 4
+\end{cases}$$
+
+对于1, 2两种情况，其大小关系是显然的，对于3, 4两种情况，其大小关系可以使用表达式 `(x + (~y + 1) >> 31) & 0x1` 判断，于是可以得到答案，由于情况分支较多，直接写位级运算表达式不方便，这里使用临时变量分步计算：
+
+```C
+int xPositive = !((x >> 31) & 0x1);                     // 1 if x > 0
+int yPositive = !((y >> 31) & 0x1);                     // 1 if y > 0
+int xPosAndyNeg = xPositive & (!yPositive);             // 1 if x > 0, y < 0
+int xNegAndyPos = (!xPositive) & yPositive;             // 1 if x < 0, y > 0
+int xyPosOrNegAndxLessy = ((x + (~y + 1)) >> 31) & 0x1; // 1 if x*y >= 0, x <= y
+return (!xPosAndyNeg) & (xNegAndyPos | xyPosOrNegAndxLessy);
+```
+
+这样的答案再次测试发现还是无法通过上面那个 `0x80000000` 的用例，原来是因为只注意了 `~y + 1` 与 `-y` 的等价性，忘记了 `-y` 本身就可能溢出，这种溢出情况就是对于最小的负数 `0x80000000` 才会出现的，其原因在于补码正负域的不对称性。因为当且仅当 `y = 0x80000000` 时，才会出现溢出，而且此时当且仅当 `x = 0x80000000` 时才返回 `1`，所以可以将这种情况使用 `x == y` 的条件过滤掉。最终答案是：
+
+```C
+int xPositive = !((x >> 31) & 0x1);                     // 1 if x > 0
+int yPositive = !((y >> 31) & 0x1);                     // 1 if y > 0
+int xPosAndyNeg = xPositive & (!yPositive);             // 1 if x > 0, y < 0
+int xNegAndyPos = (!xPositive) & yPositive;             // 1 if x < 0, y > 0
+int xyPosOrNegAndxLessy = ((x + (~y + 1)) >> 31) & 0x1; // 1 if x*y >= 0, x <= y
+int xyEqual = !(x ^ y);                                 // 1 if x == y
+return (!xPosAndyNeg) & (xyEqual | xNegAndyPos | xyPosOrNegAndxLessy);
+```
