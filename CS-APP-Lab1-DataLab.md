@@ -223,3 +223,54 @@ int isAsciiDigit(int x) {
 我们将 `0x38` 和 `0x39` 这两个数字作为特例，除这两个值外，判断 `x` 高29位是否是合法值，如果是，那么该数字一定是 ASCII Code。如果不是，再判断是否是两个特例值中的一个。
 
 判断高29位的表达式为：`!(((x >> 3) << 3) ^ 0x30)`，判断 `x` 是否是特殊值的表达式是：`!((x ^ 0x38) & (x ^ 0x39))`，最终结果为：`!(((x >> 3) << 3) ^ 0x30) | !((x ^ 0x38) & (x ^ 0x39))`
+
+# 0x07 conditional
+
+```C
+/* 
+ * conditional - same as x ? y : z 
+ *   Example: conditional(2,4,5) = 4
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 16
+ *   Rating: 3
+ */
+int conditional(int x, int y, int z) {
+  return 2;
+}
+```
+
+使用给定的几种不超过16个运算实现三元运算符，即：`x ? y : z`，若 `x == 0`，返回 `z`，否则返回 `y`。
+
+在不能使用条件分支的情况下，根据 `x` 的取值进行返回，首先比较容易想到使用 `x` 作为 mask 对 `y` 和 `z` 进行过滤。比如当 `x == 0` 时，可以用表达式 `x & y` 过滤掉 `y`；当 `x != 0` 时，根据相反的原则，首先将 `x` 做成所有位都为 `1` 的样子：`~!!x + 1`，然后表达式 `x | z` 可以过滤掉 `z`。
+
+根据上面所说的情况，可以知道使用 `x` 的值作为 mask 的思路大概是可行的。不过要首先将 `x` 转换为全 `0` 或全 `1` 的形式——这里使用额外的变量表示——`int isXZero = ~!!x + 1`。对于两种过滤表达式，考察其取值：
+
+由于：
+
+$$\mathrm{isXZero} = \begin{cases}
+  0 & when & x = 0 \\
+  -1 & when & x \neq 0
+\end{cases} $$
+
+有：
+
+$$\mathrm{isXZero\  \&\  y} = \begin{cases}
+  0 & when & x = 0 \\
+  y & when & x \neq 0
+\end{cases}$$
+
+和：
+
+$$\mathrm{isXZero\  |\  z} = \begin{cases}
+  -1 & when & x \neq 0 \\
+  z & when & x = 0
+\end{cases}$$
+
+可以看到两种滤网滤出的数值根据 `x` 的取值分别取有效值和较为规则的无效值，且取有效值的情况彼此之间错开。这样的情况很容易想到将其相加：
+
+$$\mathrm{(isXZero\ \&\ y) + (isXZero\ |\ z)} = \begin{cases}
+  z & when & x = 0 \\
+  y - 1 & when & x \neq 0
+\end{cases}$$
+
+这样答案就较为明显了，只需在 `x != 0` 时将上述的和式加上 `1` 就可以。可以认为 `x == 0` 时上式加上 `0`，这样加上的实际上是 `x` 的某种变形，即 `~!!x`。所以答案为：`(isXZero | z) + (isXZero & y) + ~!!x`
