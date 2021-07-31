@@ -606,7 +606,7 @@ uf = (uf << 23) | frac;
 return uf;
 ```
 
-# 0x0C 
+# 0x0C floatFloat2Int
 
 ```C
 /* 
@@ -634,7 +634,7 @@ int frac = (uf << 9) >> 9;
 int sign = uf >> 31;
 ```
 
-然后根据[这篇文章]()可以知道：当阶码小于 `0x7F` 时，浮点数的绝对值都小于 `1`。因此：
+然后根据[这篇文章](https://blog.zhuwenq.icu/2021/07/31/IEEE754%E6%B5%AE%E7%82%B9%E6%95%B0/)可以知道：当阶码小于 `0x7F` 时，浮点数的绝对值都小于 `1`。因此：
 
 ```C
 if(exp < 0x7F) return 0;
