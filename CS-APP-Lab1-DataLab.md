@@ -491,7 +491,7 @@ $$\begin{cases}
 
 接下来就是逐个计算出各个位的值。计算的过程实际上还是与[leftmost_one](https://blog.zhuwenq.icu/2021/07/22/leftmost-one/#more)或者[判断整数位模式中是否有偶数个1](https://blog.zhuwenq.icu/2021/07/19/%E5%88%A4%E6%96%AD%E6%95%B4%E6%95%B0%E4%BD%8D%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%98%AF%E5%90%A6%E6%9C%89%E5%81%B6%E6%95%B0%E4%B8%AA1/#more)中提到的逐位做逻辑运算的方法一致，具体来说，就是逐步移位并与移位前的值运算。
 
-关于计算方法，还有进一步解释的必要。以$\mathrm{X_0}$的表达式为例，可以看出它的式子中是$\mathrm{Y_1 | Y_3 | Y_5 | Y_7...}$即所有的偶数(从第0位开始算)位之间取或。这种模式就可以先移动两位与原数字取或，做到$\mathrm{Y_1 | Y_3}$和$\mathrm{Y_5 | Y_7}$等。然后移动四位与移动两位取或的结果取或，做到$\mathrm{Y_1 | Y_3 | Y_5 | Y_7}$等。最终移动16位与上一次移位取或的结果取或，最终做到所有偶数位取或。最终取或的结果总是在位向量的最左侧或者最右侧(取决于移位是向左移还是向右移)。
+关于计算方法，还有进一步解释的必要。以$\mathrm{X_0}$的表达式为例，可以看出它的式子中是$\mathrm{Y_1 | Y_3 | Y_5 | Y_7...}$即所有的偶数(从第0位开始算)位之间取或。这种模式就可以先移动两位与原数字取或，做到$\mathrm{Y_1 | Y_3}$和$\mathrm{Y_5 | Y_7}$等。然后移动四位与移动两位取或的结果取或，做到$\mathrm{Y_1 | Y_3 | Y_5 | Y_7}$等。最终移动16位与上一次移位取或的结果取或，做到所有偶数位取或。最终取或的结果总是在位向量的最左侧或者最右侧(取决于移位是向左移还是向右移)。
 
 观察上面5个位的表达式，会发现都具有类似的规律，可以用下面的过程分别求出其值：
 
@@ -546,3 +546,156 @@ X_4 = X_0 | (X_4 << 1);
 根据上文说到的，最终结果实际上是最左侧1的位置再加1，因此答案应该是 `X_4 + 1 + 1`。但是还有特例：`0` 和 `-1`。对于 `0`，其只需要1位即可表示，但是求解过程中 $\mathrm{X_4} == 0$，最终返回 `2`。对于 `-1`，其也是只需一位，但是对其求反后它的位模式与 `0`相同，因此计算的最左侧1的位置也是0，最终返回 `2`。可以发现对于 `xAbs` 位模式为全零的值，真值表中没有体现，实际计算时得到的 $\mathrm{X_4}$ 值与位模式为最低位为 `1` 的情况一样，都是 `0`。因此这种情况应该特殊处理，即当 `xAbs != 0` 时返回 `X_4 + 1 + 1`，其他时候返回 `X_4 + 1`。最终答案是 `X_4 + 1 + (!!xAbs)`。
 
 最终使用了81个运算符才解出答案，而且过程也十分曲折和愚蠢，记录的也非常拖沓缺乏条理。如果有更好的答案，也许我会学习一个。
+
+# 0x0B floatScale2
+
+```C
+/* 
+ * floatScale2 - Return bit-level equivalent of expression 2*f for
+ *   floating point argument f.
+ *   Both the argument and result are passed as unsigned int's, but
+ *   they are to be interpreted as the bit-level representation of
+ *   single-precision floating point values.
+ *   When argument is NaN, return argument
+ *   Legal ops: Any integer/unsigned operations incl. ||, &&. also if, while
+ *   Max ops: 30
+ *   Rating: 4
+ */
+unsigned floatScale2(unsigned uf) {
+  return 2;
+}
+```
+
+这一题是计算浮点数的2倍，不过是以无符号数的形式进行位级的计算，这样更能够理解当浮点数乘以2时，在位级的层面究竟发生了什么。
+
+根据[IEEE754浮点数](https://blog.zhuwenq.icu/2021/07/31/IEEE754浮点数/index.html)的定义，一个32位的单精度浮点数可以分为**符号位**，**阶码**和**尾数**三部分。其具体的解释可以看[这篇文章](https://blog.zhuwenq.icu/2021/07/31/IEEE754浮点数/index.html)。
+
+```C
+int sign = uf >> 31;
+int exp = (uf >> 23) & 0xFF;
+int frac = (uf << 9) >> 9;
+```
+
+首先关注特殊情况，即阶码全为 `1` 或全为 `0` 时：
+
+全为 `1` 时：该浮点数是无穷大或 `NaN`。不管哪种情况，在乘2的情形下都应该原样返回：
+
+```C
+if(exp == 0xFF)return uf;
+```
+
+全为 `0` 时：该浮点数的尾数相当的小，至少还没有用完尾数的表达空间，此时我们将尾数左移1位作为乘2：
+
+```C
+if(exp == 0) frac <<= 1;
+```
+
+当阶码既非全 `1` 也非全 `0` 时，即取规格化的值时，此时尾数的编码方式是**隐含的以1开头的**表示，其值一定大于1而小于2，此时无法通过改变尾数来实现乘2，不过根据浮点数的公式：$V = (-1)^S \times M\times 2^E$，通过阶码 $E$ 加1可以实现乘以2：
+
+```C
+else exp++;
+```
+
+对这三种情况，情况1最为简单，也没有什么问题。情况2则需要考虑溢出的问题：当对尾数左移1位时，有可能造成原来属于尾数的1被移出尾数的范围。这说明移位后尾数值大于1，无法再用阶码全为 `0` 这种方式表示，应该将被移出的位放进阶码，否则乘2的计算就是错误的，因此最终的答案应该加上：
+
+```C
+exp += (frac >> 23);
+uf = s;
+uf = (uf << 8) | exp;
+uf = (uf << 23) | frac;
+return uf;
+```
+
+# 0x0C 
+
+```C
+/* 
+ * floatFloat2Int - Return bit-level equivalent of expression (int) f
+ *   for floating point argument f.
+ *   Argument is passed as unsigned int, but
+ *   it is to be interpreted as the bit-level representation of a
+ *   single-precision floating point value.
+ *   Anything out of range (including NaN and infinity) should return
+ *   0x80000000u.
+ *   Legal ops: Any integer/unsigned operations incl. ||, &&. also if, while
+ *   Max ops: 30
+ *   Rating: 4
+ */
+int floatFloat2Int(unsigned uf) {
+  return 2;
+}
+```
+
+这道题要求实现一个位级的浮点数转整数。还是先将浮点数分为三个部分：
+
+```C
+int exp = (uf >> 23) & 0xFF;
+int frac = (uf << 9) >> 9;
+int sign = uf >> 31;
+```
+
+然后根据[这篇文章]()可以知道：当阶码小于 `0x7F` 时，浮点数的绝对值都小于 `1`。因此：
+
+```C
+if(exp < 0x7F) return 0;
+```
+
+同时我们知道最大的补码整数是 `0x7FFFFFFF`，即 $1\times 2^{31} - 1$，对应到浮点数是 $2147483647.0 = 1\times 2^{31}$，因此当指数(E = e - 127)大于31时，应该返回题目要求的`0x80000000u`。
+
+除去以上两种情况，剩下的就是本题的普遍情况。我们知道浮点数的编码方式是 $V = M\times 2^{E}$，其中 $M$ 就是尾数，$E$ 就是阶码。我们还知道尾数的编码方式是负权的，也就是对于 $M = 100$ 这种编码，实际上可以看作 $M = 1.100 = 1\times 2^{-1}$。结合阶码来看，当阶码的值为正时(如果阶码为负根本不会进入这种情况)，例如阶码为 `2`，那么该浮点数的绝对值就是：$|V| = 1\times 2^{-1} \times 2^2 = 110.000$。也就是说，虽然尾数的编码是负权的，但是每一位阶码都可以“解救”一位尾数成为正权。反过来说，对于值为 `E` 的阶码和 `23` 位的尾数，将有 `23 - E` 位的尾数(低位)所表示的信息会由于阶码不够而被舍入。更具体地说，就是尾数向右移动 `23 - E` 位得到的就是浮点数对应整数的绝对值。当然不能忘记该种情况下尾数是隐含1的，也就是尾数的最高位前面还要增加一个1。
+
+由于该题可以使用 `while` 语句，因此这部分可以这样实现：
+
+```C
+int result = frac | (1 << 23);
+int shift = 23 - E;
+while (shift--)
+  result >>= 1;
+```
+
+最后只需要处理符号部分，当浮点数为负时返回负的补码数就可以。
+
+```C
+if(s)return ~result + 1;
+return result;
+```
+
+# 0x0D floatPower2
+
+```C
+/* 
+ * floatPower2 - Return bit-level equivalent of the expression 2.0^x
+ *   (2.0 raised to the power x) for any 32-bit integer x.
+ *
+ *   The unsigned value that is returned should have the identical bit
+ *   representation as the single-precision floating-point number 2.0^x.
+ *   If the result is too small to be represented as a denorm, return
+ *   0. If too large, return +INF.
+ * 
+ *   Legal ops: Any integer/unsigned operations incl. ||, &&. Also if, while 
+ *   Max ops: 30 
+ *   Rating: 4
+ */
+unsigned floatPower2(int x) {
+  return 2;
+}
+```
+
+这题要求实现位级2的幂。2的幂与浮点数的表示方式十分亲和，因此这题也较为简单。我们知道单精度浮点数能够表示的范围在 $(1 - \epsilon)\times 2^{-126} \backsim (2 - \epsilon)\times 2^{127}$之间，因此当 `x` 在 `[-126, 127]` 范围之外时，应属于特殊情况：
+
+```C
+if(x > 127) return 0x7f800000;
+if(x < -126) return 0;
+```
+
+其余情况下，对于浮点数 $2.0^x$，它的符号和尾数应该全部是 `0`，而阶数则随着 `x` 变化。具体的说，由于阶码即2的幂，而且阶数 `E = e - 127`，因此阶码 `e = x + 127`。将其移动到阶码的位置，不需要动其他的位，就是正确答案了：
+
+```C
+return (127 + x) << 23;
+```
+
+# 0x0E 
+
+前后花了3天，甚至正在学习的第三章的内容都被我放下，优先做这个Lab，感觉还是十分有意思的，尤其是做的过程中主动复习了很多逻辑函数方面的知识，对第二章中的重点：数据的编码方式和位级行为的认识也更加清楚。最后放一张全部通过的截图吧，希望能够坚持下去做完所有的Lab。
+
+![](CS-APP-Lab1-DataLab/pass.png)
