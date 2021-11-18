@@ -7,6 +7,7 @@ tags:
     - Survey
 categories: Paper Note
 ---
+刘鹏飞博士著 Prompt 范式综述
 
 <!--more-->
 

@@ -7,7 +7,6 @@ tags:
 categories: Paper Note
 ---
 
-<!--more-->
 
 ## Motivition
 
@@ -24,6 +23,8 @@ categories: Paper Note
 其中**插入删除**和**本地释义**是变长操作，**替换**是定长操作
 
 ![](Tail-to-Tail-Non-Autoregressive-Sequence-pridiction/1.png)
+
+<!--more-->
 
 ### Pervious Works
 
