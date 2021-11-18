@@ -1,7 +1,7 @@
 ---
 title: hexo建站并部署到GitHub Pages
-date: 2020-03-02
-update: 2020-04-11
+date: 2020-03-02 00:00:00
+update: 2020-04-11 00:00:00
 ---
 
 GitHub Pages 是一项静态站点托管服务，它直接从 GitHub 上的仓库获取
