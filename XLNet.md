@@ -1,4 +1,12 @@
-# Xlnet: Generalized autoregressive pretraining for language understanding
+---
+title: "Xlnet: Generalized autoregressive pretraining for language understanding"
+tags:
+    - NLP
+    - PLM
+    - Transformer
+    - XLNet
+categories: Paper Note
+---
 
 <!--more-->
 

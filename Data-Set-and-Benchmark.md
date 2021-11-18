@@ -1,3 +1,12 @@
+---
+title: "Dataset and Benchmark"
+tags:
+    - NLP
+    - Dataset
+    - Benchmark
+categories: Quick Note
+---
+
 - SQuAD V1.1: 维基百科上的抽取式问答任务。答案是从给定的文本中抽取的，模型预测出给定的文本中每个token的标记，标记着要抽取的文本段的起始和结尾。
 - SQuAD V2.0: 答案未必能够从给定文本中抽取到的问答任务。
 - MNLI: 文本二分类任务。预测一个句子是否包含另一个。

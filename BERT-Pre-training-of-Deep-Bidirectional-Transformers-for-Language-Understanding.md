@@ -1,3 +1,12 @@
+---
+title: "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"
+tags:
+    - NLP
+    - PLM
+    - BERT
+categories: Paper Note
+---
+
 # Introduction
 
 **BERT** 是一种新的语言表征模型，它是一种双向编码器表征的Transformers模型(**B**idirectional **E**ncoder **R**epresentions from **T**ransformers)

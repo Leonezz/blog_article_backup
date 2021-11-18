@@ -1,6 +1,11 @@
 ---
-paper_title: "ERICA: Improving Entity and Relation Understanding for Pre-trained Language Models via Contrastive Learning"
-output: pdf_document
+title: "ERICA: Improving Entity and Relation Understanding for Pre-trained Language Models via Contrastive Learning"
+tags:
+    - NLP
+    - PLM
+    - Knowledge Embedding
+    - Knowledge Graph
+categories: Paper Note
 ---
 # ERICA
 

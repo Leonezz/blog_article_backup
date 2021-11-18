@@ -1,4 +1,12 @@
-# Pretrain, Prompt, and Predict: A Systematic Survey of Prompting Methods in Natural Language Processing
+---
+title: "Pretrain, Prompt, and Predict: A Systematic Survey of Prompting Methods in Natural Language Processing"
+tags:
+    - NLP
+    - PLM
+    - Prompt
+    - Survey
+categories: Paper Note
+---
 
 <!--more-->
 

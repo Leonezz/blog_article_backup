@@ -1,10 +1,10 @@
 ---
-author: Antoine Bordes, Nicolas Usunier, Alberto Garcia-Dur ́ an, Jason Weston, Oksana Yakhnenko 
-tags: 
-    - Representation Learning
-    - Knowledge Representation
+title: "Translating Embeddings for Modeling Multi-relational Data"
+tags:
+    - Knowledge Embedding
+    - TransE
+categories: Paper Note
 ---
-# Translating Embeddings for Modeling Multi-relational Data
 
 <!--more-->
 

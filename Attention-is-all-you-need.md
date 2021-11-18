@@ -1,3 +1,11 @@
+---
+title: Attention is all you need
+tags:
+    - NLP
+    - PLM
+    - Transformer
+categories: Paper Note
+---
 # Introduction
 
 序列转导模型的编码器和解码器主要基于复杂的递归或卷积神经网络，其中表现最好的模型在编码器和解码器之间通过一个注意力机制层相连。我们提出一种简单的模型架构：Transformer。仅仅基于注意力机制，完全去除递归和卷积。同时Transformer可以很好地推广到其他任务中。

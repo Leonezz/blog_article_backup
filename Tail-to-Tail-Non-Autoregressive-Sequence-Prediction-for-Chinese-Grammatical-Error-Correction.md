@@ -1,11 +1,11 @@
 ---
-author: Piji Li, Shuming Shi
+title: "Tail-to-Tail Non-Autoregressive Sequence Prediction for Chinese Grammatical Error Correction"
 tags:
-    - BERT
+    - NLP
+    - Sequence Prediction
     - CGEC
+categories: Paper Note
 ---
-
-# Tail-to-Tail Non-Autoregressive Sequence Prediction for Chinese Grammatical Error Correction
 
 <!--more-->
 

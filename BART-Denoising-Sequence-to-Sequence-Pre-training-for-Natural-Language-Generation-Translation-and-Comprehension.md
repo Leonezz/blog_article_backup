@@ -1,6 +1,14 @@
-# Introduction
+---
+title: "BART: Bidirectional and Auto-Regressive Transformers"
+tags:
+    - NLP
+    - PLM
+    - Transformer
+    - Autoregressive
+categories: Paper Note
+---
 
-BART: Bidirectional and Auto-Regressive Transformers
+# Introduction
 
 BART是一种用于预训练seq2seq模型的降噪自动编码器。BART使用标准的Transformer架构，训练时使用任意噪声函数对文本加噪，然后试图重建受损的文本。
 

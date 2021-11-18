@@ -1,12 +1,14 @@
 ---
-Author: Zhengyan Zhang, Xu Han, Zhiyuan Liu, Xin Jiang, Maosong Sun, Qun Liu
-Tags: 
-    - BERT
-    - Knowledge
+title: "ERNIE: Enhanced Language Representation with Informative Entities"
+tags:
+    - NLP
+    - PLM
+    - Knowledge Embedding
+    - Knowledge Graph
+categories: Paper Note
 ---
-# ERNIE: Enhanced Language Representation with Informative Entities
 
-## Motivition
+# Motivition
 
 BERT 等在大规模语料库上训练的语言表征模型可以提取到丰富的语义信息，作者认为结合知识图谱中的实体信息可以引入额外知识来增强语言表征。
 
@@ -14,22 +16,22 @@ BERT 等语言表征模型虽然已经作为许多 NLP 任务的一部分取得�
 
 <!--more-->
 
-## Challenge
+# Challenge
 
 为了在语言表征中引入额外知识，有以下两个挑战：
 1. 结构化知识编码：即如何从知识图谱中提取和编码与输入文本有关的知识信息
 2. 异构信息融合：即如何设计一种特殊的预训练目标，以融合语义，句法和知识信息
 
-## Contribution
+# Contribution
 
 1. 针对结构化知识编码问题：作者首先识别出输入文本中提及的实体，然后将其与其在知识图谱中相应的实体对齐(提取)。在编码方面，作者使用知识嵌入算法（如 TransE）对知识图谱的图结构进行编码，并将编码的知识嵌入作为 ERNIE 的输入。基于文本和知识实体之间的对齐， ERINE 将知识模块中的实体表征集成到了语义模块的底层
 2. 与 BERT 类似，作者使用了 MLM 和 NSP 作为预训练目标。除此之外，作者设计了一种新的预训练目标以更好地融合文本和知识特征：随机遮住输入文本中的一些命名实体对齐，并让模型从知识图谱中选择合适的实体来补全遮住的部分。这使得模型必须结合上下文信息和知识信息才能预测被遮住的 tokens 和 entities，从而实现了一个知识性的语言表征模型
 
-## Methodology
+# Methodology
 
 输入序列记作 $\{w_1, ..., w_n\}$, 其中 $n$ 是序列的 token 长度。输入序列中的实体序列记作 $\{e_1, ..., e_m\}$, 其中 $m$ 是实体序列的长度。将包含所有 token 的词典记作 $\mathcal{V}$, 包括知识图谱中所有实体的实体列表记作 $\mathcal{E}$。如果一个 token $w \in \mathcal{V}$ 属于一个实体 $e \in \mathcal{E}$, 则定义它们的对齐为：$f(w) = e$。本文中，将所有的实体对齐到实体短语的第一个 token。
 
-### 模型架构
+## 模型架构
 
 ERNIE 的架构包含两个模块：
 1. 基础的文本编码器 ($\text{T-Encoder}$), 负责捕捉基础的语义和语法信息。（BERT）
@@ -51,7 +53,7 @@ $$\{\mathbf{w}_1^o, ..., \mathbf{w}_n^o\}, \{\mathbf{e}_1^o, ..., \mathbf{e}_m^o
 
 $\{\mathbf{w}_1^o, ..., \mathbf{w}_n^o\}, \{\mathbf{e}_1^o, ..., \mathbf{e}_m^o\}$ 将被用于具体的任务。
 
-### 知识编码器
+## 知识编码器
 
 $\text{K-Encoder}$ 中的 $\text{Multi-Head Attention}$ 部分即正常的自注意力过程:
 
@@ -77,7 +79,7 @@ $$\begin{array}{rl}
 
 顶部的聚合器输出的 token 和 entity 嵌入被用作 $\text{K-Encoder}$ 的最终输出嵌入
 
-### 预训练
+## 预训练
 
 **去噪实体自动编码器(denoision entity auto-encoder, dEA)**：随机遮住一些 token-entity alignments, 并要求系统预测所有对应的实体。
 
@@ -89,7 +91,7 @@ $$p(e_j|w_i) = \frac{\exp(\text{linear}(\mathbf{w}_i^o)\cdot \mathbf{e}_j)}{\Sig
 
 其中的 $\text{linear}(\cdot)$ 是一个线性层，上式被用来计算 dEA 目标的交叉熵损失函数。
 
-### 微调
+## 微调
 
 与 BERT 类似，ERNIE 输入序列的第一个 token 也是特殊的 token $\text{[CLS]}$，用于特殊的任务。
 
@@ -99,29 +101,29 @@ $$p(e_j|w_i) = \frac{\exp(\text{linear}(\mathbf{w}_i^o)\cdot \mathbf{e}_j)}{\Sig
 
 ![fine-tuning procedure](ERNIE-Enhanced-Language-Representation-with-Informative-Entities/2.png)
 
-## 实验
+# 实验
 
-### 预训练
+## 预训练
 
 预训练时的 token 编码器(T-Encoder)直接应用 BERT 的参数。预训练的过程是一个多任务(MLM, NSP, dEA)的过程，作者使用英文维基作为语料库。总共约有 4500M 个子词和 140M 个实体。
 
 预训练之前，先利用由维基数据训练的知识嵌入 TransE 作为实体的输入嵌入。具体地说，作者采样了维基数据中的 5040986 个实体和 24267796 个三元组。实体的知识嵌入在训练过程中固定，实体编码模块参数随机初始化。
 
-### 实体分类
+## 实体分类
 
 分别在 FIGER 和 Open Entity 数据集上与 NFGEC, UEFT 和 BERT 作比较。证明了
 
 1. 预训练语言模型比传统的实体分类模型更具表征能力，能够充分利用训练数据中的信息。
 2. 与 BERT 相比，ERNIE 由于引入了额外知识提高了分类精度。
 
-### 关系分类
+## 关系分类
 
 在数据集 FewRel, TACRED 上与模型 CNN, PA-LSTM, C-GCN 和 BERT 对比。结果证明：
 
 1. 预训练语言模型在关系分类方面可以提供更多的信息
 2. ERNIE 在两个数据集上关系分类表现都优于 BERT，尤其在小规模数据集上。证明额外知识信息帮助模型更好地利用小的训练数据集
 
-### GLUE
+## GLUE
 
 在通用自然语言理解中的8个数据集上与 BERT 进行了对比。
 

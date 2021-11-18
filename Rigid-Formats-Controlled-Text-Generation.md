@@ -1,12 +1,10 @@
 ---
-author: Piji Li Haisong Zhang Xiaojiang Liu Shuming Shi
-tags: 
-    - BERT
-    - Auto-regressive
-    - Sigid-format Generation
+title: "Rigid Formats Controlled Text Generation"
+tags:
+    - NLP
+    - Text Generation
+categories: Paper Note
 ---
-
-# Rigid Formats Controlled Text Generation
 
 <!--more-->
 
