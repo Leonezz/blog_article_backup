@@ -1,19 +1,22 @@
----
-title: Review on Transformer
-date: 2021-09-15 19:08:02
-update: 2021-09-15 19:08:02
-tags:
-    - Transformer
-    - Note
-categories: Paper Note
----
-传统的序列转导模型主要基于RNN或CNN，其中表现较好的模型通过注意力机制将所有层相连。对于RNN，其计算过程是序列化的，无法很好的并行进行。对于CNN，长距离信息的传递所需的操作与序列的长度相关，这使得学习长期依赖变得困难。Transformer是一种仅基于注意力机制的简单模型，它完全去除了RNN和CNN层，可以更好的并行运行。并且Transformer将学习长期依赖所需的操作控制为一个常数。
+# Introduction
 
-## 模型架构
+序列转导模型的编码器和解码器主要基于复杂的递归或卷积神经网络，其中表现最好的模型在编码器和解码器之间通过一个注意力机制层相连。我们提出一种简单的模型架构：Transformer。仅仅基于注意力机制，完全去除递归和卷积。同时Transformer可以很好地推广到其他任务中。
+
+<!--more-->
+
+# Background
+
+对于递归模型，其通常沿着输入和输出序列的符号位置进行因数计算，将位置与计算时间中的步骤对其， $t$ 时刻的隐藏状态 $h_t$ 作为下一时刻 $t+1$ 计算的输入。这种固有的顺序限制了训练时的并行化。本文提出的Transformer完全依靠注意力机制来计算输入和输出之间的全局关系。
+
+对于使用卷积神经网络减少顺序计算的模型，将来自不同位置的输入或输出信号关联起来所需的计算操作随着信号之间的距离的增加而增加。这使得学习远距离位置信息之间的依赖关系变得困难。在Transformer中，这种操作的数量被控制为一个恒定的常数（尽管由于平均注意力加权位置而降低了有效分辨率，Transformer使用Multi-Head Attention来解决）。
+
+Self-attention，有时称为intra-attention。是一种注意力机制，将单个序列的不同位置联系起来，以计算序列的表示。
+
+# Model Architecture
 
 Transformer基于encoder-decoder 架构。其中，encoder将由符号表征的输入序列 $(x_1, ..., x_n)$ 映射为连续的序列表征 $\mathbf{z} = (z_1, ..., z_n)$。对于给定的 $\mathbf{z}$ ，decoder利用其生成一个输出的符号序列 $(y_1, ..., y_n)$ 。在encoder和decoder中，使用堆栈式自注意力和逐点的全连接层。
 
-![](Review-on-Transformer/1)
+![Untitled](Attention-is-all-you-need/Untitled.png)
 
 ## Encoder 和 Decoder
 
@@ -43,7 +46,7 @@ Transformer基于encoder-decoder 架构。其中，encoder将由符号表征的�
 
 与在一个单独的attention function上对 $d_{model}$ 维度的 querries, keys 和 values进行计算相比，将 querries，keys 和 values 以不同的，可学习的线性投影分别投射到 $h$ 个通道上并行进行 attention function更有好处，在每个通道上，querries, keys和values分别为 $d_k, d_k和d_v$维度。在 $h$ 个通道上并行进行的attention function最终得到 $h$ 个输出矩阵，将其连接起来再经过一个投影矩阵，得到最终的结果。这种机制允许模型同时关注来自不同位置的不同表征子空间的信息。在只有一个attention head时，加权平均抑制了这种特性。
 
-![Untitled](Review-on-Transformer/2)
+![Untitled](Attention-Is-All-You-Need/Untitled1.png)
 
 Multi-Head Attention的数学过程为： $\text{MultiHead}(Q, K, V) = \text{Concat}(head_1, ..., head_h)W^O$, 其中 $head_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$
 

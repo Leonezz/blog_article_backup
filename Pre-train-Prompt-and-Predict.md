@@ -1,15 +1,6 @@
----
-title: 'Pre-train, Prompt, and Predict 阅读笔记'
-date: 2021-09-29 20:21:37
-update: 2021-09-29 20:21:37
-tags:
-    - NLP
-    - Survey
-    - Prompt
-categories: Paper Note
----
+# Pretrain, Prompt, and Predict: A Systematic Survey of Prompting Methods in Natural Language Processing
 
-# Pre-train, Prompt, and Predict: A Systematic Survey of Prompting Methods in Natural Language Processing
+<!--more-->
 
 ## NLP中的两次巨变
 
@@ -29,7 +20,7 @@ categories: Paper Note
 
 ## 传统监督学习的NLP
 
-传统的监督学习的NLP过程中，模型$P(y|x;\theta)$对于输入$x$预测出输出$y$。为了学习参数$\theta$，通常需要成组的输入和输出数据集(有标签数据)来进行训练以对条件概率进行预测。在很多任务背景下这样的数据集数量不够
+传统的监督学习的NLP过程中，模型 $P(y|x;\theta)$ 对于输入$x$预测出输出$y$。为了学习参数$\theta$，通常需要成组的输入和输出数据集(有标签数据)来进行训练以对条件概率进行预测。在很多任务背景下这样的数据集数量不够
 
 ## Prompting 的基本过程和概念
 
@@ -37,15 +28,15 @@ categories: Paper Note
 
 下表是Prompting的几个基本概念：
 
-![Untitled](Pre-train,%20Prompt,%20and%20Predict/Untitled.png)
+![](Pre-train-Prompt-and-Predict/1.png)
 
 基于Prompting的方法分三步来预测输出$\widehat{y}$
 
 ### Prompting function
 
-第一步通过形如$f_{prompt}(\cdot)$的prompting function来修改输入的文本$x$为$x' = f_{prompt}(x)$。这个函数包括两个步骤：
+第一步通过形如 $f_{prompt}(\cdot)$ 的prompting function来修改输入的文本$x$为 $x'=f_{prompt}(x)$。这个函数包括两个步骤：
 
-1. 使用一个文本模板，该模板有两个插槽：输入插槽$[X]$用来放输入$x$, 答案插槽$[Z]$用来放模型生成的答案$z$
+1. 使用一个文本模板，该模板有两个插槽：输入插槽 $[X]$ 用来放输入$x$, 答案插槽$[Z]$用来放模型生成的答案$z$
 
 2. 把输入文本$x$放进输入插槽$[X]$
 
@@ -61,11 +52,11 @@ categories: Paper Note
 
 经过 *prompting function* 之后，输入文本 $x$ 变为带有答案插槽的 $x'$，随后我们搜索获得最高分数的答案文本 $\widehat{z}$。定义 $\mathcal{Z}$ 为 $z$ 所有可能值的集合，例如在文本生成任务中， $\mathcal{Z}$ 可能包括所有语言的范围，而在文本识别的任务中， $\mathcal{Z}$ 只是一个小的子集。
 
-定义函数 $f_{fill}(x', z)$ 用于将可能的答案 $z$ 填充进 *prompt* $x'$ 的插槽 $[X]$ 中，将经过这一步骤的 *prompt* 称为 *filled prompt* ，如果填充的是正确答案，称为 *answered prompt* 。
+定义函数 $f_{fill}(x', z)$ 用于将可能的答案 $z$ 填充进 *prompt* $x'$ 的插槽 $[X]$ 中，将经过这一步骤的 *prompt* 称为 *filled prompt* ，如果填充的是正确答案，称为 *answered prompt* 。
 
 搜索的过程实际是：对于 $\mathcal{Z}$ 中每一个可能的答案 $z$ ，利用预训练的 LM: $P(\cdot; \theta)$ 来计算其概率，并取其中概率最大的答案：
 
-$$⁍$$
+$$\widehat{z} = \underset{z\in \mathcal{Z}}{\text{search}} P(f_{\text{fill}}(x', z); \theta)$$
 
 ### 答案映射
 
@@ -91,7 +82,7 @@ $$⁍$$
 
     标准语言模型通过训练来优化对文本的预测概率 $P(x)$，通常是*自回归(autoregressive)* 的方式对文本序列中从左到右的 *tokens* 进行预测
 
-较为流行的用于替换 SLM 的 Objective 是 *noise objective* ，通过噪声函数 $\widehat{x} = f_{noise}(x)$ 向输入文本序列添加噪声，然后根据噪声序列预测原始文本序列 $P(x|\widehat{x})$。
+较为流行的用于替换 SLM 的 Objective 是 *noise objective* ，通过噪声函数 $\widehat{x}=f_{noise}(x)$ 向输入文本序列添加噪声，然后根据噪声序列预测原始文本序列 $P(x|\widehat{x})$。
 
 *noise objective* 有以下两种主要的形式：
 
@@ -117,7 +108,7 @@ $$⁍$$
 
 下表是这几种噪声函数的例子：
 
-![Untitled](Pre-train,%20Prompt,%20and%20Predict/Untitled%201.png)
+![](Pre-train-Prompt-and-Predict/2.png)
 
 ## Directionality of Representations
 
@@ -129,7 +120,7 @@ $$⁍$$
 
 下图是表示顺序的模式示意图：
 
-![Untitled](Pre-train,%20Prompt,%20and%20Predict/Untitled%202.png)
+![](Pre-train-Prompt-and-Predict/3.png)
 
 ## 典型的预训练方法
 
@@ -137,7 +128,7 @@ $$⁍$$
 
 - Left-to-Right Language Model, L2R LMs
 
-    自回归语言模型的一种，用于预测即将出现的词或给出一组词的概率 $P(\mathbf{x}), \mathbb{x} = x_1, x_2, ..., x_n$。 $P(\mathbf{x})$ 通常由链式法则计算： $P(\mathbf{x}) = P(x_1)\times ... P(x_n|x_1...x_{n - 1})$
+    自回归语言模型的一种，用于预测即将出现的词或给出一组词的概率 $P(\mathbf{x}), \mathbb{x} = x_1, x_2, ..., x_n$。 $P(\mathbf{x})$ 通常由链式法则计算： $P(\mathbf{x}) = P(x_1)\times ... P(x_n|x_1...x_{n - 1})$
 
     L2R LM 由马尔可夫在1913年提出并被广泛使用，具有代表性的现代L2R LM有：GPT-3, GPT-Neo
 
@@ -145,13 +136,13 @@ $$⁍$$
 
     L2R LM 是建模文本概率的利器，但是它要求必须按照从左到右的顺序来计算表示。这种顺序的表示对于某些下游任务（如分类）可能不是最合适的。
 
-    在 *representation learning* 中广泛使用的一种双向目标函数Masked Language Model用于根据周围的文本预测被Masked的文本片段。即： $P(x_i|x_1,...x_{i - 1}, x_{i+1}, ... ,x_n)$ 代表词 $x_i$ 被给定上下文包围的概率
+    在 *representation learning* 中广泛使用的一种双向目标函数Masked Language Model用于根据周围的文本预测被Masked的文本片段。即： $P(x_i|x_1,...x_{i - 1}, x_{i+1}, ... ,x_n)$ 代表词 $x_i$ 被给定上下文包围的概率
 
     使用MLM的代表性预训练模型有：BERT， ERNIE。MLM通常非常适合如 **文本分类** 等自然语言理解和分析的任务。
 
 - Prefix and Encoder-Decoder
 
-    对于条件文本生成任务例如翻译和文本摘要任务，即给定输入文本 $\mathbf{x} = x_1,..,x_n$ ，要求生成目标文本 $\mathbf{y}$，需要一个既能够编码输入文本又能够解码输出文本的模型。
+    对于条件文本生成任务例如翻译和文本摘要任务，即给定输入文本 $\mathbf{x} = x_1,..,x_n$ ，要求生成目标文本 $\mathbf{y}$，需要一个既能够编码输入文本又能够解码输出文本的模型。
 
     对此有两种流行的架构，它们都是下面的流程：1. 使用具有完全连接掩码的编码器首先对源 $\mathbf{x}$ 进行编码，然后2. 自动回归从左到右解码 $\mathbf{y}$
 
@@ -167,9 +158,9 @@ $$⁍$$
 
 下面是几种LM的结构示意图和不同函数的的组合表：
 
-![Untitled](Pre-train,%20Prompt,%20and%20Predict/Untitled%203.png)
+![](Pre-train-Prompt-and-Predict/4.png)
 
-![Untitled](Pre-train,%20Prompt,%20and%20Predict/Untitled%204.png)
+![](Pre-train-Prompt-and-Predict/5.png)
 
 # Prompt Engineering
 
@@ -255,7 +246,7 @@ prompts没有必要限制在自然语言的范围内，连续的prompts可以直
 
 - **Prefix Tuning** : 保持LM的参数不变，将一系列与任务强相关的向量添加到输入中。数学上来讲，这包括在给定可训练的前缀矩阵 $M_{\phi}$ 和参数为 $\theta$ 的LM的情况下优化以下类对数目标：
 
-$$max_{\phi}log P(\mathbf{y}|\mathbf{x}; \theta; \phi) = max_{\phi}\Sigma_{y_i}log P(y_i|h_{<i}; \theta; \phi)$$
+$$max_{\phi}log P(\mathbf{y}|\mathbf{x}; \theta; \phi) = max_{\phi}\Sigma_{y_i}log P(y_i|h_{<i}; \theta; \phi)$$
 
  [Prefix-Tuning: Optimizing Continuous Prompts for Generation](https://arxiv.org/abs/2101.00190)
 
@@ -347,7 +338,7 @@ Answer Shape的选择通常跟任务相关， **Tokens** 和 **Span** 常用于
 
 目前主要的几个方向：
 
-- **Uniform averaging** : 取不同提示的概率平均值，是最为直观的方法。具体来说，概率是： $P(\mathbb{z}|\mathbb{x}):=\frac{1}{K}\Sigma_i^KP(\mathbb{z}|f_{prompt, i}(\mathbb{x}))$，其中 $f_{prompt, i}(\cdot)$ 是第 $i$ 个prompt
+- **Uniform averaging** : 取不同提示的概率平均值，是最为直观的方法。具体来说，概率是： $P(\mathbb{z}|\mathbb{x}):=\frac{1}{K}\Sigma_i^KP(\mathbb{z}|f_{prompt, i}(\mathbb{x}))$，其中 $f_{prompt, i}(\cdot)$ 是第 $i$ 个prompt
 
  [Exploiting Cloze Questions for Few Shot Text Classification and Natural Language Inference](https://arxiv.org/abs/2001.07676)
 
@@ -371,7 +362,7 @@ Answer Shape的选择通常跟任务相关， **Tokens** 和 **Span** 常用于
 
  [It's Not Just Size That Matters: Small Language Models Are Also Few-Shot Learners](https://arxiv.org/abs/2009.07118)
 
-- **Prompt ensembling for text generation** : 这方面的工作较少，一个简单的方法是使用标准方法基于下一个词概率来生成输出： $P(z_t|\mathbb{x}, z_{<t}):=\frac{1}{K}\Sigma_i^KP(z_t|f_{prompt, i(\mathbb{x})}, z_{<t})$
+- **Prompt ensembling for text generation** : 这方面的工作较少，一个简单的方法是使用标准方法基于下一个词概率来生成输出： $P(z_t|\mathbb{x}, z_{<t}):=\frac{1}{K}\Sigma_i^KP(z_t|f_{prompt, i(\mathbb{x})}, z_{<t})$
 
  [Few-Shot Text Generation with Pattern-Exploiting Training](https://arxiv.org/abs/2012.11926)
 
@@ -409,7 +400,7 @@ prompt augmentation的思想很简单，但是有两个方面需要探索：1. 
 
 上面提到的四种多提示方法示意图如下：
 
-![Untitled](Pre-train,%20Prompt,%20and%20Predict/Untitled%205.png)
+![](Pre-train-Prompt-and-Predict/6.png)
 
 # 训练策略
 
@@ -423,7 +414,7 @@ prompt augmentation的思想很简单，但是有两个方面需要探索：1. 
 
 在基于提示的下游任务学习中，通常有两种参数：预训练模型的参数和提示参数。根据 1. 预训练模型的参数是否更新，2. 是否引入提示参数和3. 提示参数是否更新，可以把参数参数更新方法分为以下五类：
 
-![Untitled](Pre-train,%20Prompt,%20and%20Predict/Untitled%206.png)
+![](Pre-train-Prompt-and-Predict/7.png)
 
 - **Promptless Fine-tuning：**不使用prompt的模式，仅更新语言模型的参数。
 
