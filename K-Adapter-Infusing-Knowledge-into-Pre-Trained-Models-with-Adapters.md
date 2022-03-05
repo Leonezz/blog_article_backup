@@ -1,4 +1,5 @@
 ---
+title: "K-Adapter: Infusing Knowledge into Pre-Training Models with Adapters"
 author:
     - Ruize Wang
     - Duyu Tang
@@ -12,12 +13,14 @@ author:
 tags:
     - Adapter
     - Knowledge
+categories: Paper Note
 ---
-# K-Adapter: Infusing Knowledge into Pre-Training Models with Adapters
 
 文章主要研究向预训练语言模型中注入知识的方法，现存的工作主要是通过更新预训练模型参数的方式向模型注入知识（即 fine-tune 的方式）。但是这种参数更新过程会将整个模型的参数向新注入的知识上偏移，导致之前注入的知识被削弱或冲刷。作者提出的 K-Adapter 结构，通过将不同的知识分别注入到不同的 Adapter 中实现知识的持续注入，同时 Adapter 的参数量远小于预训练模型，在知识注入的过程中更加经济。
 
 ![K-Adapter 和现有的基于微调的知识注入工作间的异同](K-Adapter/1.png)
+
+<!--more-->
 
 ## K-Adapter
 

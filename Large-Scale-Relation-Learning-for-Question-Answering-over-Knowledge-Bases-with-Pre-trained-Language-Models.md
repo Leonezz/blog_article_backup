@@ -1,15 +1,24 @@
 ---
-author: Yuanmeng Yan, Rumei Li, Sirui Wang, Hongzhi Zhang, Daoguang Zan, Fuzheng Zhang, Wei Wu, Weiran Xu
+title: "Large-Scale Relation Learning for Question Answering over Knowledge Bases with Pre-trained Language Models"
+author: 
+    - Yuanmeng Yan
+    - Rumei Li
+    - Sirui Wang
+    - Hongzhi Zhang
+    - Daoguang Zan
+    - Fuzheng Zhang
+    - Wei Wu
+    - Weiran Xu
 tags:
     - Knowledge Graph
     - QA
+categories: Paper Note
 ---
-
-# Large-Scale Relation Learning for Question Answering over Knowledge Bases with Pre-trained Language Models 
 
 KBQA(Question Answering over Knowlegde Bases) 旨在根据结构化的知识图谱回答自然语言问题，该任务在现代的问答系统和信息检索系统中广泛应用。
 由于自然语言问题与知识图谱中的推理链的不相容性，最近的 KBQA 方法更关注于图谱中的逻辑关系，忽略了图谱的节点和边上的文本语义信息。同时预训练模型虽然从大规模的语料中学习到了大量开放世界知识，但是这种知识是非结构化的，与结构化的知识图谱之间存在隔阂。为连接预训练语言模型与知识图谱，作者提出了三种**关系学习任务**来进行关系增强训练。经过这种训练，模型能够将自然语言表述与知识图谱中的关系对齐，同时能够跨过缺失的直接关系进行推理。
 
+<!--more-->
 
 ## Introduction
 

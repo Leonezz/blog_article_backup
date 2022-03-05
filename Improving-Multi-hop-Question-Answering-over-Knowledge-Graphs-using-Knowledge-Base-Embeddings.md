@@ -1,4 +1,5 @@
 ---
+title: "Improving Multi-hop Question Answering over Knowledge Graphs using Knowledge Base Embeddings"
 author: 
     - Apoorv Saxena
     - Aditay Tripathi
@@ -7,11 +8,12 @@ tags:
     - Knowledge Graph
     - QA
     - Embedding
+categories: Paper Note
 ---
 
-# Improving Multi-hop Question Answering over Knowledge Graphs using Knowledge Base Embeddings
-
 Multi-hop KGQA 要求跨越 Knowledge Graph, KG 的多个边进行推理，而且 KG 往往是不完整的，使 KGQA 更具挑战性。最近的研究有些使用额外的相关领域的语料解决 KG 的稀疏性问题，但是额外的语料是否可获取，以及*相关性*如何判别都是问题。KG embedding 作为另一个研究方向，被用于缺失连接预测以及 KG 补全，但是没有被直接用于 Multi-hop KGQA 问题。本文作者提出 EmbedKGQA，使用 KG embedding 以及 Question embedding 解决 KGQA 问题。
+
+<!--more-->
 
 ## Introduction
 

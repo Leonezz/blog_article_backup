@@ -1,4 +1,5 @@
 ---
+title: "Case-Based Reasoning for Natural Language Queries over Knowledge Bases"
 author:
     - Rajarshi Das
     - Manzil Zaheer
@@ -12,9 +13,8 @@ author:
 tags:
     - Knowledge Graph
     - QA
+categories: Paper Note
 ---
-
-# Case-Based Reasoning for Natural Language Queries over Knowledge Bases
 
 作者提出一种**基于案例的推理(Case-Based Reasoning, CBR)**解决 KBQA 问题的模型 CBR-KBQA。文章关注于语义解析方式，根据自然语言问题文本生成可执行的逻辑表达式 (SparQL)，并在知识图谱上执行该逻辑表达式获得答案。
 
@@ -33,6 +33,8 @@ CBR-KBQA 由三部分组成：
 ![](Case-Based-Reasoning-for-Natural-Language-Queries-over-Knowledge-Bases/1.png)
 
 由于 CBR-KBQA 根据案例库中的过往案例为新问题生成逻辑表达式，CBR-KBQA 可以通过向案例库添加新案例的方式泛化到训练过程中从未见过的关系上。
+
+<!--more-->
 
 ## CBR-KBQA
 

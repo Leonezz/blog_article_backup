@@ -1,12 +1,17 @@
 ---
-author: Jimmy Lei Ba, Jamie Ryan Kiros, Geoffrey E. Hinton 
+title: "Layer Normalization"
+author: 
+    - Jimmy Lei Ba
+    - Jamie Ryan Kiros
+    - Geoffrey E. Hinton 
 tags:
     - ML
+categories: Paper Note
 ---
 
-# Layer Normalization
-
 Layer Normalization 是针对 Batch Normalization 提出的，两者都是深度神经网络中为解决训练困难而提出的归一化手段。
+
+<!--more-->
 
 ## Background
 
