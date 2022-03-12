@@ -45,7 +45,7 @@ $$p(X) = \prod_i p(w_i|w_{<i})$$
 
 $$X_{duet} = \begin{cases}
     \{w_1, w_2, \dots, w_T\} &\text{Word Sequence}\\
-    \{e_1, e_2, \dots, e_T} &\text{Entity Sequence}
+    \{e_1, e_2, \dots, e_T\} &\text{Entity Sequence}
 \end{cases}$$
 
 上述两个序列逐位置对齐，当有多个词对应同一个实体时，如 $w_{i:i+k}$ 对应一个实体，则 $e_i$ 到 $e_{i+k}$ 是相同的。
@@ -68,12 +68,12 @@ $$\begin{aligned}
 具体来说，作者添加了一个 output head 进行实体辨别。记 $L$ 层 transformer 层输出的第 $i$ 个 token 的表征为 $\mathbf{h}_i^L$, 则第 $i$ 个位置的实体损失计算为：
 
 $$\begin{aligned}
-    l_e(e_i|t_{<i}) &= \max(0, s(\mathbf{h}_i^L, \mathbf{e}_i) - s(\mathbf{h}_i^L, \mathbf{e}__)+\lambda)\\
+    l_e(e_i|t_{<i}) &= \max(0, s(\mathbf{h}_i^L, \mathbf{e}_i) - s(\mathbf{h}_i^L, \mathbf{e}_-)+\lambda)\\
     s(\mathbf{h}_i^L, \mathbf{e}_j) &= \cos(\text{Linear}(\mathbf{h}_i^L), \mathbf{e}_j)\\
     \mathbf{h}_i^L &= \text{transformer}^L(t_{<i})
 \end{aligned}$$
 
-上式中，$e_i$ 指第 $i$ 个 token 所指代的实体，$e__$ 指作者从除 $e_i$ 之外的实体中采样得到的负例，该损失促使模型分辨 $token_i$ 所指代的实体。
+上式中，$e_i$ 指第 $i$ 个 token 所指代的实体，$e_-$ 指作者从除 $e_i$ 之外的实体中采样得到的负例，该损失促使模型分辨 $token_i$ 所指代的实体。
 
 值得注意的是，在实验中，作者使用的负例采样策略为：1% 的 $null$ , 49% 的随机采样实体，50% 的从目标实体的 Trans-E  嵌入空间中最近的 100 个实体中采样（被认为是难以分辨的负例）。
 
