@@ -92,7 +92,7 @@ $\begin{aligned}
 
 在推理时，模型为 $(h, q)$ 对与所有的候选答案 $a'\in \mathcal{E}$ 组成的三元组评分。对于相对较小的 KG，直接选出评分最高的实体作为答案：
 
-\[e_{ans} = \argmax_{a'\in\mathcal{E}}\phi(e_h, e_q, e_{a'})\]
+$$e_{ans} = \argmax_{a'\in\mathcal{E}}\phi(e_h, e_q, e_{a'})$$
 
 但是当 KG 很大时，适当修剪候选答案集合将会显著提升性能。
 
@@ -109,7 +109,7 @@ $\begin{aligned}
 
 最终使用 relation score 和 ComplEx score 的线性组合寻找答案：
 
-\[e_{ans} = \argmax_{a'\in\mathcal{N}_h}\phi(e_h, e_q, e_{a'}) + \gamma*\text{RelScore}_{a'}\]
+$$e_{ans} = \argmax_{a'\in\mathcal{N}_h}\phi(e_h, e_q, e_{a'}) + \gamma*\text{RelScore}_{a'}$$
 
 
 

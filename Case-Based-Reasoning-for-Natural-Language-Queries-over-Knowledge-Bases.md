@@ -16,7 +16,7 @@ tags:
 categories: Paper Note
 ---
 
-作者提出一种**基于案例的推理(Case-Based Reasoning, CBR)**解决 KBQA 问题的模型 CBR-KBQA。文章关注于语义解析方式，根据自然语言问题文本生成可执行的逻辑表达式 (SparQL)，并在知识图谱上执行该逻辑表达式获得答案。
+作者提出一种 **基于案例的推理(Case-Based Reasoning, CBR)** 解决 KBQA 问题的模型 CBR-KBQA。文章关注于语义解析方式，根据自然语言问题文本生成可执行的逻辑表达式 (SparQL)，并在知识图谱上执行该逻辑表达式获得答案。
 
 CBR-KBQA 由三部分组成：
 
@@ -58,9 +58,9 @@ $$L = -\sum_{i, j}\omega_{i, j}\log\frac{\exp(\sim(\mathbf{q}_i, \mathbf{q}_j))}
 
 该模块将 retriever 返回的 k 个案例作为输入送入一个预训练的 encoder-decoder transformer 模型，训练模型为新问题生成逻辑表达式。作者选用具有稀疏注意力的 BigBird 作为该模块的 transformer 模型，主要因为完全注意力的 transformer 模型的空间复杂度是输入序列长度的二次方，例如 BART，T5 等只支持最长 512 的输入序列。
 
-作者按如下格式对问题 $q$ 和案例 $\mathcal{D}_q = \{(q_1^', l_1^'), (q_2^', l_2^'), ..., (q_k^', l_k^')\}$ 进行拼接：
+作者按如下格式对问题 $q$ 和案例 $\mathcal{D}_q = \{(q_1', l_1'), (q_2', l_2'), ..., (q_k', l_k')\}$ 进行拼接：
 
-$$\text{Input}_\text{Encoder}(q, \mathcal{D}_q) = q\text{[SEP]}q_1^'\text{[SEP]}l_1^'...q_k^'\text{[SEP]}l_k^'$$
+$$\text{Input}_\text{Encoder}(q, \mathcal{D}_q) = q\text{[SEP]}q_1'\text{[SEP]}l_1'...q_k'\text{[SEP]}l_k'$$
 
 作者采用 BART-BASE 初始化模型，并使用标准的 seq2seq 交叉熵损失训练。除此之外，作者在模型输出层的 softmax 层上添加了一个正则化项：有案例 $\mathcal{D}_q$ 时和仅有 $q$ 时得到概率分布之间的 KL 散度。记 seq2seq 模型为函数 $f$, 有 $\mathcal{D}_q$ 时输出的概率分布为 $\sigma = \text{softmax}(f(q, \mathcal{D}_q))$, 仅有 $q$ 时输出的概率分布为 $\sigma' = \text{softmax}(f(q))$, 则添加了 KLD 正则化项的损失函数为：
 

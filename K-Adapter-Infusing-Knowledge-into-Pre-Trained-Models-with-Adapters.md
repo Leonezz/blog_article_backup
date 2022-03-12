@@ -42,11 +42,11 @@ K-Adapter 中的 K 个 Adapter 层被插在 RoBERTa（代指 pre-trained model�
 
 ### Factual Adapter
 
-作者使用从 T-REx[^T-REx] 数据集中提取的子集 T-REx-rc 作为数据集，共包含 430 种关系和 5.5M 个句子。作者采用 relation classification 任务训练该 Adapter，具体地说，Adapter 和 RoBERTa 的输出向量拼接后作为关系分类层的输入，并且在输入实体的表征上使用了池化层。
+作者使用从 T-REx[^T-REx] 数据集中提取的子集 T-REx-rc 作为数据集，共包含 430 种关系和 5.5M 个句子。作者采用 **relation classification** 任务训练该 Adapter，具体地说，Adapter 和 RoBERTa 的输出向量拼接后作为关系分类层的输入，并且在输入实体的表征上使用了池化层。
 
 ### Linguistic Adapter
 
-语言知识包括语法，语义知识等，作者通过自然语言文本中词之间的依存关系提取语言知识。作者在 BooK Corpus[^BookCorpus] 数据集的一部分上使用现成的依存解析器构建了一个包含 1M 个样本的依存关系预测数据集。并在该数据集上进行依存关系预测任务，具体地说即预测输入句子中每个词的 head index。作者将 RoBERTa 和 Adapter 的输出向量拼接后经过一个线性分类层进行每个词的分类。
+语言知识包括语法，语义知识等，作者通过自然语言文本中词之间的依存关系提取语言知识。作者在 BooK Corpus[^BookCorpus] 数据集的一部分上使用现成的依存解析器构建了一个包含 1M 个样本的依存关系预测数据集。并在该数据集上进行**依存关系预测**任务，具体地说即预测输入句子中每个词的 head index。作者将 RoBERTa 和 Adapter 的输出向量拼接后经过一个线性分类层进行每个词的分类。
 
 ![](K-Adapter/3.png)
 
