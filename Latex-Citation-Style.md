@@ -6,10 +6,12 @@ tags:
     - Latex
     - Citation Style
 categories:
-    - 知识类
+    - 记录备忘
 ---
 
 $\LaTeX$ 中有三个主流的 bibliography 包：bibtex, natbib 和 biblatex, 其中 biblatex 支持本地化(多语言), 也更加现代化更加易用。
+
+<!--more-->
 
 ```tex
 % 导入 biblatex , 使用 biber 后端 , author-year cite style
