@@ -16,6 +16,8 @@ categories:
 ---
 作者认为：现有的 parameter-efficient tuning 方法虽然有效，但是对这些方法中真正有效的设计以及它们之间的联系很少被研究和理解。
 
+<!--more-->
+
 作者基于此研究了 adapter, prefix-tuning 和 LoRA 等方法的设计重点和它们之间的联系，同时研究了这些方法之间的交换或组合。
 
 作者认为：parameter-efficient tuning 方法保持基模型参数不变，其本质相当于以某种方式修饰基模型的表征。主要的设计在于：
