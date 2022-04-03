@@ -106,7 +106,7 @@ $$\begin{aligned}
     &= (1 - \lambda(\mathbf{x}))\underbrace{\text{Attn}(\mathbf{xW}_q, \mathbf{CW}_k, \mathbf{CW}_v)}_\text{standard attention} + \lambda(\mathbf{x}) \underbrace{\text{Attn}(\mathbf{xW}_q, \mathbf{P}_k, \mathbf{P}_v)}_\text{independent of} \mathbf{C}
 \end{aligned}$$
 
-其中 $\lambda(\mathbf{x}) = \frac{\Sigma_i\exp(\mathbf{xW}_q\mathbf{P}_k^T)_i}{\Sigma_i\exp(\mathbf{xW}_q\mathbf{P}_k^T)_i + \Sigma_j\exp(\mathbf{xW}_q\mathbf{W}_k^T\mathbf{C}^T)_j}$
+其中 $\lambda(\mathbf{x}) = \frac{\Sigma_i\exp(\mathbf{xW}_q\mathbf{P}_k^T)_i}{\Sigma_i\exp(\mathbf{xW}_q\mathbf{P}_k^T)_i + \Sigma_j\exp(\mathbf{xW}_q\mathbf{W}_k^T\mathbf{C}^T)_j}$. **note**: $\text{softmax}(\mathbf{x}) = \frac{\exp(\mathbf{x})}{\sum_i\exp(\mathbf{x})}$
 
 note:
 
