@@ -21,6 +21,8 @@ Transformer 模型中, FFN 层的参数占 3/2，但是其在网络中的作用�
 
 作者提出 FFN 层相当于神经记忆系统，以第一个矩阵为 key， 第二个矩阵为 value 记录了键值对信息。其中的 key 指人类可解释的文本特征(表层的文本结构特征和深层的文本语义特征), value 则可以诱导成在词典空间中的概率分布。
 
+<!--more-->
+
 # Introduction
 
 ![How FFN Layers emulate Key-Value Memories](Transformer-Feed-Forward-Layers-Are-Key-Value-Memories/1.png)
